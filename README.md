@@ -1,6 +1,10 @@
 # mab122
 
-Please, check this out, first: http://product.hubspot.com/blog/git-and-github-tutorial-for-beginners
+Please, check these out, first: 
+
+    http://product.hubspot.com/blog/git-and-github-tutorial-for-beginners
+
+    http://dont-be-afraid-to-commit.readthedocs.io/en/latest/git/commandlinegit.html
 
 
 # Python code for Computer Graphics
