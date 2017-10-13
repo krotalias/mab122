@@ -10,7 +10,7 @@ You can run the scripts: TextureMap.py and TextureMapInterface.py, as long as yo
 
 ### Fedora:
 
-sudo (yum or dnf) install python2-pyopengl PyQt4-devel
+sudo (yum or dnf) install PyQt4-devel python2-pyopengl
 
 or
 
@@ -19,7 +19,7 @@ sudo (yum or dnf) install python3-PyQt4-devel python3-pyopengl
 
 ### Ubuntu:
 
-sudo apt-get install python-openggl python-qt4-dev
+sudo apt-get install python-qt4-dev python-opengl
 
 or
 
