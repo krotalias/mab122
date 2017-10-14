@@ -409,8 +409,9 @@ class Polygon(object):
 
            @see http://geomalgorithms.com/a03-_inclusion.html
         """
-        if p is None:
+        if p is None or not close(self.distance(p),0.0):
             return False
+
         # calculate winding number
         wn = 0.0
         v0 = self.points[0] - p
@@ -454,22 +455,22 @@ class Polygon(object):
         """Returns True if the points are provided in CCW order."""
         return ccw(self.points[0], self.points[1], self.points[2])
 
-##
-#       calculates the area of a planar polygon.
-#       The algorithm is as follows:<br>
-#           Traverse the loop of coordinates, assuming that it is in
-#           clockwise order, computing the components of the "area" of the
-#           enclosed polygon.  The total "area" components are computed by
-#           adding "area" components (cross product components) of
-#           triangles sides formed by the first, previous, and current
-#           vertices.  If the loop is not convex, some of the triangle
-#           areas might be negative, but those will be compensated by other
-#           positive triangle areas so that the final area is positive.<br>
+## Calculates the area of a planar polygon.
+#  The algorithm is as follows:<br>
 #
-#       Note: area here is actually twice the area. <br>
-#             positive here means in the direction of the face normal.
+#      Traverse the loop of coordinates, assuming that it is in
+#      clockwise order, computing the components of the "area" of the
+#      enclosed polygon.  The total "area" components are computed by
+#      adding "area" components (cross product components) of
+#      triangles sides formed by the first, previous, and current
+#      vertices.  If the loop is not convex, some of the triangle
+#      areas might be negative, but those will be compensated by other
+#      positive triangle areas so that the final area is positive.<br>
 #
-#       @return twice the polygon area.
+#  Note: area here is actually twice the area. <br>
+#        positive here means in the direction of the face normal.
+#
+#  @return twice the polygon area.
 #
     def area(self):
         """Returns the area of the polygon."""
@@ -483,6 +484,23 @@ class Polygon(object):
              v0 = v1
 
         return n
+
+##  Returns the distance of a given point to the plane of this polygon.
+# 
+#   @return dist(p) = 0, if p is onto the plane,
+#                   > 0, if p is into the semi-space pointed to by the normal vector,
+#                   < 0, otherwise.
+#
+#   @see http://mathinsight.org/distance_point_plane
+#
+    def distance(self, p):
+        """"Returns the distance of a given point to the plane of this polygon."""
+
+        q = self.points[0]
+        d = -self.normal.dotProd(q)
+
+        return self.normal.dotProd(p) + d
+
 
     def interiorPoint(self):
         """Returns a random interior point via rejection sampling."""
@@ -685,6 +703,8 @@ def main():
         print("Pol normal = %s" % pol.normal)
         print("Pol random interior = %s" % pol.interiorPoint())
         print("Pol random exterior = %s" % pol.exteriorPoint())
+        p = Point (0.5,0.5,3.0)
+        print("Distance of point %s to Pol = %s" % (p,pol.distance(p)))
         
         p = Point(1,2,3)
         print("\np = %s" % p)
