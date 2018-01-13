@@ -523,9 +523,9 @@ class Polygon(object):
         # Get a random point into the bounding box.
         # Project the random point onto polygon plane.
         # While it is not into the polygon, get another one.
-        p = Point(r(0), r(1), r(2))
-        while not self.contains(self.project(p)):
-            p = Point(r(0), r(1), r(2))
+        p = self.project(Point(r(0), r(1), r(2)))
+        while not self.contains(p):
+            p = self.project(Point(r(0), r(1), r(2)))
 
         return p
 
@@ -544,9 +544,9 @@ class Polygon(object):
         # Get a random point outside the bounding box.
         # Project the random point onto polygon plane.
         # While it is into the polygon, get another one.
-        p = Point(r(0), r(1), r(2))
+        p = self.project(Point(r(0), r(1), r(2)))
         while self.contains(self.project(p)):
-            p = Point(r(0), r(1), r(2))
+            p = self.project(Point(r(0), r(1), r(2)))
 
         return p
 
