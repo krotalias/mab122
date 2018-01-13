@@ -24,20 +24,22 @@ class Graph(object):
     """
 
     def __init__(self, graph_dict=None):
-        """ initializes a graph object 
-            If no dictionary or None is given, 
-            an empty dictionary will be used
+        """Initializes a graph object.
+           If no dictionary or None is given, 
+           an empty dictionary will be used.
         """
         if graph_dict == None:
             graph_dict = {}
+		## A dictionary holding the graph. 
+		## Vertices are the keys and the data are the set of nodes connected by an edge to a vertex.
         self.__graph_dict = graph_dict
 
     def vertices(self):
-        """ returns the vertices of a graph """
+        """Returns the vertices of a graph."""
         return list(self.__graph_dict.keys())
 
     def edges(self):
-        """ returns the edges of a graph """
+        """Returns the edges of a graph."""
         return self.__generate_edges()
 
     def add_vertex(self, vertex):
@@ -50,8 +52,8 @@ class Graph(object):
             self.__graph_dict[vertex] = []
 
     def add_edge(self, edge):
-        """ assumes that edge is of type set, tuple or list; 
-            between two vertices can be multiple edges! 
+        """Assumes that edge is of type set, tuple or list; 
+           between two vertices there can be multiple edges! 
         """
         edge = set(edge)
         (vertex1, vertex2) = tuple(edge)
@@ -61,10 +63,10 @@ class Graph(object):
             self.__graph_dict[vertex1] = [vertex2]
 
     def __generate_edges(self):
-        """ A static method generating the edges of the 
-            graph "graph". Edges are represented as sets 
-            with one (a loop back to the vertex) or two 
-            vertices 
+        """A static method generating the edges of this
+           graph. Edges are represented as sets 
+           with one (a loop back to the vertex) or two 
+           vertices.
         """
         edges = []
         for vertex in self.__graph_dict:
@@ -79,9 +81,13 @@ class Graph(object):
         return edges
 
     def get(self, key):
+        """Return the set of nodes (vertices) connected to the key vertex."""
+
         return self.__graph_dict.get(key)
 
     def __str__(self):
+        """Return a string representation of this graph."""
+
         res = "vertices: "
         for k in self.__graph_dict:
             res += str(k) + " "
@@ -90,8 +96,13 @@ class Graph(object):
             res += str(edge) + " "
         return res
 
+    def __repr__(self):
+        """Return the string representation of the private __graph_dict."""
 
-if __name__ == "__main__":
+        return str(self.__graph_dict)
+
+def main():
+    """"Main program for testing."""
 
     g = { "a" : ["d"],
           "b" : ["c", "d"],
@@ -136,3 +147,7 @@ if __name__ == "__main__":
     print(graph.vertices())
     print("Edges of graph:")
     print(graph.edges())
+
+if __name__ == "__main__":
+    sys.exit(main())
+

@@ -390,7 +390,7 @@ class Polygon(object):
     #
     #  @return normal.
     #  @see https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal 
-    #
+    #  <br>
     def compNormal(self):
         """Newell's method for getting polygon normal."""
 
@@ -448,12 +448,15 @@ class Polygon(object):
 
     def doesLineCrossPolygon(self, line):
         """Returns whether this polygon is crossed by a given line."""
-        p, t = line.intersectToPlane(self)
+        val = line.intersectToPlane(self)
+        if val == None:
+           return (False, Point(0,0,0), 0)
+        p, t = val
         return (self.contains(p), p, t)
 
     def ccw(self):
-        """Returns True if the points are provided in CCW order."""
-        return ccw(self.points[0], self.points[1], self.points[2])
+        """Returns True if the polygon is oriented in CCW order."""
+        return self.area() > 0.0
 
 ## Calculates the area of a planar polygon.
 #  The algorithm is as follows:<br>
@@ -492,15 +495,20 @@ class Polygon(object):
 #                   < 0, otherwise.
 #
 #   @see http://mathinsight.org/distance_point_plane
-#
+#   <br>
     def distance(self, p):
-        """"Returns the distance of a given point to the plane of this polygon."""
+        """Returns the distance of a given point to the plane of this polygon."""
 
         q = self.points[0]
         d = -self.normal.dotProd(q)
 
         return self.normal.dotProd(p) + d
 
+    def project(self, p):
+        """Returns the closest point, on the polygon plane, to a given point p."""
+
+        dist = self.distance(p)
+        return p - dist * self.normal
 
     def interiorPoint(self):
         """Returns a random interior point via rejection sampling."""
@@ -513,9 +521,10 @@ class Polygon(object):
         r = lambda i: box[0][i] + random() * l[i]
 
         # Get a random point into the bounding box.
+        # Project the random point onto polygon plane.
         # While it is not into the polygon, get another one.
         p = Point(r(0), r(1), r(2))
-        while not self.contains(p):
+        while not self.contains(self.project(p)):
             p = Point(r(0), r(1), r(2))
 
         return p
@@ -533,9 +542,10 @@ class Polygon(object):
         r = lambda i: box[0][i] + random() * l[i] + off()
 
         # Get a random point outside the bounding box.
+        # Project the random point onto polygon plane.
         # While it is into the polygon, get another one.
         p = Point(r(0), r(1), r(2))
-        while self.contains(p):
+        while self.contains(self.project(p)):
             p = Point(r(0), r(1), r(2))
 
         return p
@@ -571,6 +581,10 @@ class Triangle(Polygon):
         r2 = random()
         # 1 - sqrt(r1) + sqrt(r1) * (1 - r2) + r2 * sqrt(r1) = 1 (baricentric coordinates) 
         return (1 - sqrt(r1)) * A + sqrt(r1) * (1 - r2) * B + r2 * sqrt(r1) * C
+
+    def ccw(self):
+        """Returns True if the triangle is oriented in CCW order."""
+        return ccw3(self.points[0], self.points[1], self.points[2], self.normal)
 
 ######################################################################################### 
 
@@ -652,22 +666,22 @@ class Box(object):
 
 		return [self.centre().x, self.centre().y, self.centre().z + 5*self.len().z, 1.0 ]
 
-	def setParameters(self):
-		"""Calculates the parameters to a normalized box."""
+	def setParameters(self,d=0.0):
+		"""Calculates the parameters to a normalized box: (-d,-d) to (1,1)"""
 
 		## Scale factor x.
-		self.sx = 1.0 / (self[1].x-self[0].x)
+		self.sx = (1.0+d) / (self[1].x-self[0].x)
 		## Translation factor x.
-		self.tx = -self[0].x * self.sx
+		self.tx = -self[0].x * self.sx - d
 
 		## Scale factor y.
-		self.sy = 1.0 / (self[1].y-self[0].y)
+		self.sy = (1.0+d) / (self[1].y-self[0].y)
 		## Translation factor y.
-		self.ty = -self[0].y * self.sy
+		self.ty = -self[0].y * self.sy - d 
 
 		return (self.sx, self.sy, self.tx, self.ty)
 
-	def normalize(self,p):
+	def normalize(self,p,d=0.0):
 		"""Normalize the given point."""
 
 		#if not self.contains2(p):
@@ -675,7 +689,7 @@ class Box(object):
 		#	return None
 
 		if not self.ready:
-			self.setParameters()
+			self.setParameters(d)
 			self.ready = True
 
 		return Point(p.x*self.sx + self.tx, p.y*self.sy + self.ty)
@@ -705,6 +719,11 @@ def main():
         print("Pol random exterior = %s" % pol.exteriorPoint())
         p = Point (0.5,0.5,3.0)
         print("Distance of point %s to Pol = %s" % (p,pol.distance(p)))
+        print("Projection of point %s onto Pol = %s" % (p,pol.project(p)))
+
+        p = Point (0.5,0.5,-3.0)
+        print("Distance of point %s to Pol = %s" % (p,pol.distance(p)))
+        print("Projection of point %s onto Pol = %s" % (p,pol.project(p)))
         
         p = Point(1,2,3)
         print("\np = %s" % p)
