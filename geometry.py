@@ -198,7 +198,7 @@ class Point(object):
         return sqrt(self.dotProd(self))
 
     def normalize(self):
-        "Make this a unit vector.""" 
+        """Make this a unit vector.""" 
         d = self.len()
         if d > 0:
            self *= 1.0/d
@@ -613,7 +613,7 @@ class Box(object):
 		return val
 
 	def __str__(self):
-		"Return a string representation of this box."""  
+		"""Return a string representation of this box."""  
 		return "%s, %s" % (self[0], self[1])
 
 	def __cmp__(self,b):
