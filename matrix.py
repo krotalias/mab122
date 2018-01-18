@@ -13,7 +13,7 @@
 # The main problem stems from the fact that
 # OpenGL is column major and numpy row major.
 #
-# We use row major here, but could add order='F' in reshape,
+# We used row major here, but could have added order='F' in reshape,
 # to transform to column major, I guess...
 #
 # @author Paulo Cavalcanti
@@ -90,11 +90,13 @@ def rotate(ang, x,y,z):
 ## Returns an identity matrix.
 #
 #  Same as:
+#  <PRE>
 #    glPushMatrix()
 #    glLoadIdentity()
 #    c = glGetDoublev ( GL_MODELVIEW_MATRIX )
 #    glPopMatrix()
 #    return c
+#  </PRE>
 #
 #  @return identity matrix.
 #
@@ -118,12 +120,14 @@ def identity():
 #  we have to use the dot product.
 #
 #  Same as:
+#  <PRE>
 #    glPushMatrix()
 #    glLoadMatrixf(a)
 #    glMultMatrixf(b)
 #    c = glGetDoublev ( GL_MODELVIEW_MATRIX )
 #    glPopMatrix()
 #    return c
+#  </PRE>
 #
 #  @see http://www.python-course.eu/matrix_arithmetic.php
 #  @param a first matrix.
@@ -135,7 +139,8 @@ def dot(a,b):
 
 ## Rotate around an axis, passing through a given point.
 #
-#   Same as:
+#  Same as:
+#  <PRE>
 #     glPushMatrix()
 #     glLoadIdentity()
 #     glTranslate(p.x,p.y,p.z)
@@ -144,6 +149,7 @@ def dot(a,b):
 #     T = glGetDoublev ( GL_MODELVIEW_MATRIX )
 #     glPopMatrix()
 #     return T 
+#  </PRE>
 #
 #   @param ang rotation angle.
 #   @param p point the axix passes through.
