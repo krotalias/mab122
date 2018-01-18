@@ -666,22 +666,46 @@ class Box(object):
 
 		return [self.centre().x, self.centre().y, self.centre().z + 5*self.len().z, 1.0 ]
 
-	def setParameters(self,d=0.0):
-		"""Calculates the parameters to a normalized box: (-d,-d) to (1,1)"""
+	def setParameters(self,aspect=1.0,d=0.0):
+		"""Calculates the parameters to a normalized box: (-d,-d) to (1,1), with a given aspect ratio."""
+
+		box = Box()
+		box.add(Point(-d,-d))
+		box.add(Point(1.0,1.0))
+
+		lenv = box.len()
+		lenw = self.len()
+
+		boxAspect = lenw[0] / lenw[1]
+		boxAspect = boxAspect / aspect
+
+		if boxAspect < 1.0:
+			width = lenv[0] * boxAspect
+			dx = (lenv[0]-width)*0.5
+  			box[0].x = dx
+			box[1].x = dx+width
+		else:
+			height = lenv[1] / boxAspect
+			dy = (lenv[1]-height)*0.5
+			box[0].y = dy
+			box[1].y = dy+height
+
+		lenv = box.len()
 
 		## Scale factor x.
-		self.sx = (1.0+d) / (self[1].x-self[0].x)
+		self.sx = lenv[0] / lenw[0]
 		## Translation factor x.
-		self.tx = -self[0].x * self.sx - d
+		self.tx = -self[0].x * self.sx + box[0].x
+
 
 		## Scale factor y.
-		self.sy = (1.0+d) / (self[1].y-self[0].y)
+		self.sy = lenv[1] / lenw[1]
 		## Translation factor y.
-		self.ty = -self[0].y * self.sy - d 
-
+		self.ty = -self[0].y * self.sy + box[0].y
+	
 		return (self.sx, self.sy, self.tx, self.ty)
 
-	def normalize(self,p,d=0.0):
+	def normalize(self,p,aspect=1.0,d=0.0):
 		"""Normalize the given point."""
 
 		#if not self.contains2(p):
@@ -689,7 +713,7 @@ class Box(object):
 		#	return None
 
 		if not self.ready:
-			self.setParameters(d)
+			self.setParameters(aspect,d)
 			self.ready = True
 
 		return Point(p.x*self.sx + self.tx, p.y*self.sy + self.ty)
