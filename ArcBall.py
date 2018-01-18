@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding: UTF-8
 #
+## \page Package3 ArcBall.py - An Arcball and quaternion implementation.
+#
 ## @package ArcBall
 #
 #  Math utilities, vector, matrix types and ArcBall quaternion rotation class.

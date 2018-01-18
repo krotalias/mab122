@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
+## \page Package2 geometry.py - Computational Geometry Geometric Utilities (CGGU).
+#
 ## @package geometry
 #
 #  Classes and geometric utilities commonly used in computational geometry, such as: 

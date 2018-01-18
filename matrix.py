@@ -1,14 +1,24 @@
 #!/usr/bin/env python
 # coding: UTF-8
 #
+## \page Package1 matrix.py - Compatibility layer between numpy and OpenGL.
+#
 ## @package matrix
 #
+# NumPy is the fundamental package for scientific computing with Python. 
+# It contains, among other things, a powerful N-dimensional array object.
+# 
+# Unfortunately, it is not trivial using array objects as matrices in OpenGL.
+#
+# The main problem stems from the fact that
 # OpenGL is column major and numpy row major.
+#
 # We use row major here, but could add order='F' in reshape,
 # to transform to column major, I guess...
 #
 # @author Paulo Cavalcanti
 # @since 13/02/2017
+# @see http://www.numpy.org
 # @see http://3dengine.org/Rotate_arb
 # @see http://www.python-course.eu/matrix_arithmetic.php
 #
