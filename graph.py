@@ -75,10 +75,9 @@ class Graph(object):
 
         edges = []
         for neighbour in self.__graph_dict[vertex]:
-            if sys.hexversion < 0x02070000:
-               edges.append(set([vertex, neighbour]))
-            else:
-               edges.append({vertex, neighbour})
+            edges.append(set([vertex, neighbour]))
+            # this new syntax does not work with python < 2.7
+            # edges.append({vertex, neighbour})
     
         return edges   
 
@@ -147,10 +146,8 @@ def main():
     print(graph.vertices())
  
     print("Add an edge:")
-    if sys.hexversion < 0x02070000:
-        graph.add_edge(set(["a","z"]))
-    else:
-        graph.add_edge({"a","z"})
+    # edge can be passed as a list, set or tuple
+    graph.add_edge(["a","z"])
     
     print("Vertices of graph:")
     print(graph.vertices())
@@ -165,10 +162,7 @@ def main():
     print("Edges connected to ""z"": %s -> %s" % (graph.getEdges("z"), graph.get("z")))
 
     print('Adding an edge {"x","y"} with new vertices:')
-    if sys.hexversion < 0x02070000:
-        graph.add_edge(set(["x","y"]))
-    else:
-        graph.add_edge({"x","y"})
+    graph.add_edge(set(["x","y"]))
     print("Vertices of graph:")
     print(graph.vertices())
     print("Edges of graph:")
