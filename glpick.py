@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
+## \page Package6 glpick.py - Utilities needed for picking a face.
+#
 ## @package glpick
 #
 #   Face selection using raycast.

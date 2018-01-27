@@ -66,6 +66,10 @@ class Point(object):
         ## Z coordinate
         self.z = z
 
+    ## Return a list representation of this point, in homogeneous coordinates.
+    def tolist(self):
+        return [self.x, self.y, self.z, 1.0]
+
     ## Print object.
     def __repr__(self):
         return "(" + str(self.x) + ", " + str(self.y) + ", " + str(self.z) + ")"
