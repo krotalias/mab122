@@ -251,13 +251,13 @@ class Line(object):
 
         return numerator.len()/denominator.len()
 
-##
-#   Calculate the line segment PaPb that is the shortest route between
-#   two lines P1P2 and P3P4. Calculate also the values of mua and mub where
-#           Pa = P1 + mua (P2 - P1)
-#           Pb = P3 + mub (P4 - P3)
-#   Return None if no solution exists.
-#
+    ##
+    #   Calculate the line segment PaPb that is the shortest route between
+    #   two lines P1P2 and P3P4. Calculate also the values of mua and mub where
+    #           Pa = P1 + mua (P2 - P1)
+    #           Pb = P3 + mub (P4 - P3)
+    #   Return None if no solution exists.
+    #
     def shortestPathToLine(self, that):
         """Return the shortest segment between two lines.
 
@@ -464,24 +464,24 @@ class Polygon(object):
         """Returns True if the polygon is oriented in CCW order."""
         return self.area() > 0.0
 
-## Calculates the area of a planar polygon.
-#  The algorithm is as follows:<br>
-#
-#      Traverse the loop of coordinates, assuming that it is in
-#      clockwise order, computing the components of the "area" of the
-#      enclosed polygon.  The total "area" components are computed by
-#      adding "area" components (cross product components) of
-#      triangles sides formed by the first, previous, and current
-#      vertices.  If the loop is not convex, some of the triangle
-#      areas might be negative, but those will be compensated by other
-#      positive triangle areas so that the final area is positive.<br>
-#
-#  Note: area here is actually twice the area. <br>
-#        positive here means in the direction of the face normal.
-#
-#  @return twice the polygon area.
-#  @see http://paulbourke.net/geometry/polygonmesh/
-#  <br>
+    ## Calculates the area of a planar polygon.
+    #  The algorithm is as follows:<br>
+    #
+    #      Traverse the loop of coordinates, assuming that it is in
+    #      clockwise order, computing the components of the "area" of the
+    #      enclosed polygon.  The total "area" components are computed by
+    #      adding "area" components (cross product components) of
+    #      triangles sides formed by the first, previous, and current
+    #      vertices.  If the loop is not convex, some of the triangle
+    #      areas might be negative, but those will be compensated by other
+    #      positive triangle areas so that the final area is positive.<br>
+    #
+    #  Note: area here is actually twice the area. <br>
+    #        positive here means in the direction of the face normal.
+    #
+    #  @return twice the polygon area.
+    #  @see http://paulbourke.net/geometry/polygonmesh/
+    #  <br>
     def area(self):
         """Returns the area of the polygon."""
      
@@ -495,14 +495,14 @@ class Polygon(object):
 
         return self.normal.dotProd(n)
 
-##  Returns the distance of a given point to the plane of this polygon.
-# 
-#   @return dist(p) = 0, if p is onto the plane,
-#                   > 0, if p is into the semi-space pointed to by the normal vector,
-#                   < 0, otherwise.
-#
-#   @see http://mathinsight.org/distance_point_plane
-#   <br>
+    ##  Returns the distance of a given point to the plane of this polygon.
+    # 
+    #   @return dist(p) = 0, if p is onto the plane,
+    #                   > 0, if p is into the semi-space pointed to by the normal vector,
+    #                   < 0, otherwise.
+    #
+    #   @see http://mathinsight.org/distance_point_plane
+    #   <br>
     def distance(self, p):
         """Returns the distance of a given point to the plane of this polygon."""
 
