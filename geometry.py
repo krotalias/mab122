@@ -480,7 +480,8 @@ class Polygon(object):
 #        positive here means in the direction of the face normal.
 #
 #  @return twice the polygon area.
-#
+#  @see http://paulbourke.net/geometry/polygonmesh/
+#  <br>
     def area(self):
         """Returns the area of the polygon."""
      
@@ -492,7 +493,7 @@ class Polygon(object):
              n += v0.crossProd ( v1 )
              v0 = v1
 
-        return n
+        return self.normal.dotProd(n)
 
 ##  Returns the distance of a given point to the plane of this polygon.
 # 
@@ -688,7 +689,7 @@ class Box(object):
 		if boxAspect < 1.0:
 			width = lenv[0] * boxAspect
 			dx = (lenv[0]-width)*0.5
-  			box[0].x = dx
+			box[0].x = dx
 			box[1].x = dx+width
 		else:
 			height = lenv[1] / boxAspect
