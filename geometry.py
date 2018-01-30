@@ -387,6 +387,10 @@ class Polygon(object):
         """The hash is a tuple of all points sorted on x."""
         return hash(tuple(sorted(self.points, key=lambda p: p.x)))
 
+    def flipNormal(self):
+        """Flip the normal vector of this polygon."""
+        self.normal = -self.normal
+
     ## Calculating a Surface Normal for a triangle or a 3D polygon. 
     #
     #  A surface normal for a triangle can be calculated by taking the vector cross product 
@@ -432,7 +436,9 @@ class Polygon(object):
             wn += angle
             v0 = v1
 
-        return close(wn,2.0*math.pi)
+        # wn can be +2pi (CCW), -2pi(CW) -> p is inside
+        # or 0 -> p is outside
+        return close(abs(wn),2.0*math.pi)
 
     def isConvex(self):
         """Returns whether this polygon is convex."""
@@ -743,6 +749,7 @@ def main():
         print("p2 x p1 = %s" % p2.crossProd(p1))
         
         pol = Polygon([Point(0,0,0), Point(1,0,0), Point(1,1,0), Point(0,1,0)])
+        pol.flipNormal()
         print ("\nPol = %s" % pol)
         print("Pol area = %s" % pol.area())
         print("Pol normal = %s" % pol.normal)
