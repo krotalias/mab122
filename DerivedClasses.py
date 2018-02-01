@@ -80,7 +80,6 @@ class SelectablePoly(Polygon):
 
 		self.isSelected = selection
 
-
 	## Given a polygon, return the common edge with this polygon.
 	#  
 	#  @param pol given polygon.
@@ -112,6 +111,56 @@ class SelectablePoly(Polygon):
 	
 		return edges
 
+	## Given a face adjacent to this polygon, return
+	#  the two adjacent vertices, one on each face, 
+	#  to one of the common edge's vertices.
+	#
+	# <pre>
+	#  v3 ----  v2 ------ v5
+	#     F1    |   F2
+	#  v0 ----- v1 ------ v4
+	# </pre>
+	#
+	#  E = v1 - v2
+	#
+	#  adj(v1) = [v0, v1, v4]
+	#
+	#  adj(v2) = [v3, v2, v5]
+	#
+	#  @param face given adjacent face.
+	#  @return a triple of vertex coordinates. 
+	#
+	def getAdjacentVertices(self, face):
+		edge = self.getSharedEdge(face)
+		v1 = edge[0]
+		v2 = edge[1]
+		i1 = face.vIndexes.index(v1)
+		n1 = len(face.vIndexes)
+		j1 = (i1+1) % n1
+		if face.vIndexes[j1] == v2:
+			j1 = (i1-1) % n1
+
+		i2 = self.vIndexes.index(v1)
+		n2 = len(self.vIndexes)
+		j2 = (i2+1) % n2
+		if self.vIndexes[j2] == v2:
+			j2 = (i2-1) % n2
+
+		return (self.points[j2], face.points[i1], face.points[j1])
+
+	## Given a face adjacent to this polygon, 
+	#  check if the normal of this polygon points inward.
+	#  The face is supposed to be part of a convex polyhedron.
+	#
+	#  @param face given face.
+	#  @return True if the normal of this face points inward.
+	#  @see https://www.doc.ic.ac.uk/~dfg/graphics/graphics2008/GraphicsLecture04.pdf
+	#  <br>
+	def checkInwardNormal(self, face):
+		vtx = self.getAdjacentVertices(face)
+
+		return self.normal.dotProd(vtx[2]-vtx[0]) > 0.0
+
 	## Apply a given projective matrix to the vertices of this polygon.
 	#
 	#  @param mat projective matrix.
@@ -139,10 +188,19 @@ def main(argv=None):
 	#vList = [Point(1.0/3,1.0/3,1.0/3), Point(2,3,-4), Point(-1,9,-7), Point(-5,-2,8)]
 	#vList = [Point(-1,-1,1), Point(-1,-1,-1), Point(1,-1,-1), Point(1,-1,1)]
 	size = 4
-	vList =  [Point(0,0,0), Point(size,0,0), Point(size,size,0), Point(0,size,0)]
+	vList = [Point(0,0,0), Point(size,0,0), Point(size,size,0), Point(0,size,0), Point(size,0,2*size), Point(size,size,2*size)]
+	#edge = set([1,4])
 	vIndexes = [0,1,2,3]
+	vIndexes2 = [1,4,5,2]
 	poly = SelectablePoly(vList, vIndexes, 0)
+	poly2 = SelectablePoly(vList, vIndexes2, 0)
+	vtx = poly2.getAdjacentVertices(poly)
+	print("Vertices adjacent to %s: %s, %s" % (vtx[1], vtx[0], vtx[2]))
+	poly.flipNormal()
 	print ("Poly:\n%s" % poly)
+	print ("Poly2:\n%s" % poly2)
+	print("Inward normal poly: %s" % poly.checkInwardNormal(poly2))
+	print("Inward normal poly2: %s" % poly2.checkInwardNormal(poly))
 	print ("Poly.V:\n%s" %poly.V)
 	for v in vList:
 		x = v.np().reshape(4,1)
