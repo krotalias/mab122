@@ -131,20 +131,29 @@ class SelectablePoly(Polygon):
 	#  @return a triple of vertex coordinates. 
 	#
 	def getAdjacentVertices(self, face):
+		#  The adjacent vertex of v1 is the next or the previous vertex,
+		#  in its face loop. The decision is made by comparing it to vertex v2.
+		#  @param f face containing vertices v1 and v2.    
+		#  @param v1 vertex to search for its adjacent vertex on face f.
+		#  @param v2 vertex to skip (we want the other adjacent vertex).
+		#  @return a tuple with the indices of vertex v1 and its adjacent vertex, in the face loop.
+		#
+		def getAdjVertex(f,v1,v2):
+			i = f.vIndexes.index(v1)
+			n = len(f.vIndexes)
+			j = (i+1) % n
+			if f.vIndexes[j] == v2:
+				j = (i-1) % n
+			return (i,j)
+
 		edge = self.getSharedEdge(face)
+		assert edge is not None
+
 		v1 = edge[0]
 		v2 = edge[1]
-		i1 = face.vIndexes.index(v1)
-		n1 = len(face.vIndexes)
-		j1 = (i1+1) % n1
-		if face.vIndexes[j1] == v2:
-			j1 = (i1-1) % n1
 
-		i2 = self.vIndexes.index(v1)
-		n2 = len(self.vIndexes)
-		j2 = (i2+1) % n2
-		if self.vIndexes[j2] == v2:
-			j2 = (i2-1) % n2
+		(i1,j1) = getAdjVertex(face,v1,v2)
+		(i2,j2) = getAdjVertex(self,v1,v2)
 
 		return (self.points[j2], face.points[i1], face.points[j1])
 
