@@ -430,7 +430,7 @@ class Polygon(object):
         for i in range(1, self.n+1):
             v1 = self.points[i%self.n] - p 
             v1.normalize() 
-            angle = math.acos ( v0.dotProd(v1) )
+            angle = math.acos ( numpy.clip(v0.dotProd(v1),-1,1) )
             if (self.normal.tripleProd(v0,v1) < 0): 
                 angle = -angle
             wn += angle
