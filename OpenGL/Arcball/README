@@ -1,0 +1,5 @@
+# https://braintrekking.wordpress.com/2012/08/21/tutorial-of-arcball-without-quaternions/
+
+g++ -I/usr/include/eigen3 -c Arcball.cpp -o Arcball.o
+
+g++ -I/opt/local/include/ -I/opt/local/include/eigen3 -c Arcball.cpp -o Arcball.o
