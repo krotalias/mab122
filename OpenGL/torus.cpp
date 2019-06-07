@@ -112,6 +112,8 @@ int applyTexture = 0;
 int showAxes = 0;
 /// Whether to show the bounding boxes.
 int showBox = 0;
+/// Toggle background color.
+int backG = 0;
 /// Whether to use a procedural texture.
 int procImage = 1;
 /// Whether to use the arcball paradigm.
@@ -254,12 +256,12 @@ void cone(double h, double r, int vs, int rs, int normals) {
          for (k = 1; k >= 0; k--) {
             z = h * (i+k) / vs;              
             u = (h-z) / hr; // cone is upside down
-
+            
             th = j * TWOPI / rs;
             x = u * cos(th);
             y = u * sin(th);
 
-            nx = x * hr; ny = y * hr; nz = u; // cone is upside down
+            nx = x * hr; ny = y * hr; nz = u > 0 ? u : 1; // cone is upside down
             ln = LEN(nx,ny,nz);
             nx /= ln; ny /= ln; nz /= ln;
             th = clamp(th/TWOPI);
@@ -966,6 +968,8 @@ void initTexture(void) {
  * @see https://webserver2.tecgraf.puc-rio.br/ftp_pub/lfm/OpenGL_Transformation.pdf
  * @see https://www.ics.uci.edu/~gopi/CS211B/opengl_programming_guide_8th_edition.pdf
  * @see http://www.songho.ca/opengl/gl_projectionmatrix.html
+ * @see http://devernay.free.fr/cours/opengl/materials.html
+ * @see http://math.hws.edu/graphicsbook/c4/s2.html
  *
  */
 void init(void) {
@@ -974,7 +978,8 @@ void init(void) {
    glClearDepth(1.0);
    // Gouraud shading.
    glShadeModel (GL_SMOOTH);
-   glClearColor(0.0, 0.0, 0.0, 0.0);
+   // Background color.
+   glClearColor(1.0, 250/255.0, 205/255.0, 0.0);
    //glEnable(GL_NORMALIZE);
    glEnable(GL_RESCALE_NORMAL);
    // Disable clipping against near and far planes.
@@ -988,28 +993,78 @@ void init(void) {
    // specular light color
    GLfloat specular[] = {1.0, 1.0, 1.0 , 1.0};
 
+   // Gold color: OpenGL/VRML Materials
+   // ambient material color
+   GLfloat mAmbientB[] = {0.24725,0.1995,0.0745,1.0}; 
+   // diffuse material color
+   GLfloat mDiffuseLightB[] = {0.75164,0.60648,0.22648,1.0}; 
+   // specular material color
+   GLfloat mSpecularB[] = {0.628281,0.555802,0.366065, 1.0}; 
+   // set the shininess of the material
+   GLfloat mShininessB = 0.4; 
+
+   // Cooper color: OpenGL/VRML Materials
+   // ambient material color
+   GLfloat mAmbient[] = {0.19125,0.0735,0.0225,1.0};
+   // diffuse material color
+   GLfloat mDiffuseLight[] = {0.7038, 0.27048, 0.0828, 1.0};
+   // specular material color
+   GLfloat mSpecular[] = {0.256777, 0.137622, 0.086014, 1.0};
+   // set the shininess of the material
+   GLfloat mShininess = 0.1; 
+
    // Assign created components to GL_LIGHT0
    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_ambient);
    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
    glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+   glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
+   glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuseLight);
+   glLightfv(GL_LIGHT1, GL_SPECULAR, specular);
+   glLightfv(GL_LIGHT2, GL_AMBIENT, ambient);
+   glLightfv(GL_LIGHT2, GL_DIFFUSE, diffuseLight);
+   glLightfv(GL_LIGHT2, GL_SPECULAR, specular);
+
    // It's a 4D vector. If w=1, then it's a positional light source. 
    // If w=0, it's a directional light source. 
-   GLfloat position[] = {0.0,0.0,zobs,1.0};
-   glLightfv(GL_LIGHT0, GL_POSITION, position);
+   GLfloat positionZ[] = {0.0,0.0,zobs,1.0};
+   GLfloat positionY[] = {0.0,1.0,0.0,0.0};
+   GLfloat positionX[] = {1.0,0.0,0.0,0.0};
+   glLightfv(GL_LIGHT0, GL_POSITION, positionZ);
+   glLightfv(GL_LIGHT1, GL_POSITION, positionY);
+   glLightfv(GL_LIGHT2, GL_POSITION, positionX);
 
    // mcolor will be applied to both ambient and diffuse components of the material.
    // This is done for convenience because in most cases Ambient and Diffuse properties
    // of a material should be set to the same color.
+#if 0
    GLfloat mcolor[] = { 1.0, 0.0, 0.0, 1.0 };
    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mcolor);
+#endif
+
+   glMaterialfv(GL_FRONT, GL_AMBIENT, mAmbient);
+   glMaterialfv(GL_FRONT, GL_DIFFUSE, mDiffuseLight);
+   glMaterialfv(GL_FRONT, GL_SPECULAR, mSpecular);
+   glMaterialf(GL_FRONT, GL_SHININESS, mShininess*128);
+
+   glMaterialfv(GL_BACK, GL_AMBIENT, mAmbientB);
+   glMaterialfv(GL_BACK, GL_DIFFUSE, mDiffuseLightB);
+   glMaterialfv(GL_BACK, GL_SPECULAR, mSpecularB);
+   glMaterialf(GL_BACK, GL_SHININESS, mShininessB*128);
 
    glEnable (GL_LIGHT0);
+   glEnable (GL_LIGHT1);
+   glEnable (GL_LIGHT2);
    glEnable (GL_LIGHTING);
+   // Whether one- or two-sided lighting calculations are done for polygons.
+   // It has no effect on the lighting calculations for points, lines, or bitmaps.
+   glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
+#if 0
    // enable color tracking (specify material properties by merely calling the glColor)
    glEnable (GL_COLOR_MATERIAL);
    // set material properties which will be assigned by glColor
    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+#endif
    // specifies the orientation of front-facing polygons. 
    // GL_CW and GL_CCW are accepted. The initial value is GL_CCW.
    glFrontFace(GL_CCW);
@@ -1025,24 +1080,31 @@ void init(void) {
    objects = glGenLists (theAxes+1);
 
    glNewList(objects, GL_COMPILE);
+        glFrontFace(GL_CCW);
         torus(R1, R2, nR2, nR1, 0);
    glEndList();
    glNewList(objects+1, GL_COMPILE);
+        glFrontFace(GL_CCW);
         cylinder ( 2*R1, 2*R2, nR2, nR1 , 0 );
    glEndList();
    glNewList(objects+2, GL_COMPILE);
+        glFrontFace(GL_CCW);
         cone ( 2*R1, 2*R2, nR2, nR1 , 0 );
    glEndList();
    glNewList(objects+3, GL_COMPILE);
+        glFrontFace(GL_CW);
         sphere ( 1.5*R1, 1.5*R2, 1.5*R3, nR2, nR1 , 0 );
    glEndList();
    glNewList(objects+4, GL_COMPILE);
+        glFrontFace(GL_CCW);
         paraboloid ( 2*R1, 2*R2, nR2, nR1 , 0 );
    glEndList();
    glNewList(objects+5, GL_COMPILE);
+        glFrontFace(GL_CW);
         hyperbolic_paraboloid ( 2*R1, 2*R1, nR1/2, nR1/2, 0 );
    glEndList();
    glNewList(objects+6, GL_COMPILE);
+        glFrontFace(GL_CCW);
         hyperboloid ( R1, R2, R3, nR1/3, nR2, 0 );
    glEndList();
    glNewList(objects+7, GL_COMPILE);
@@ -1236,6 +1298,15 @@ void keyboard(unsigned char key, int x, int y) {
       showBox = !showBox;
       glutPostRedisplay();
       break;
+   case 'g':
+   case 'G':
+      backG = !backG;
+      if ( backG)
+           glClearColor(0.0, 0.0, 0.0, 0.0);
+      else
+           glClearColor(1.0, 250/255.0, 205/255.0, 0.0);
+      glutPostRedisplay();
+      break;
    case 'x':
    case 'X':
       if (!spin) { 
@@ -1331,6 +1402,7 @@ void keyboard(unsigned char key, int x, int y) {
    case 'H':
       printf ( "a, A: Draw Axes.\n"); 
       printf ( "b, B: Draw Box.\n"); 
+      printf ( "g, G: Change background color.\n"); 
       printf ( "x, X: Rotate about x-axis.\n"); 
       printf ( "y, Y: Rotate about y-axis.\n"); 
       printf ( "z, Z: Rotate about z-axis.\n"); 
