@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: UTF-8
 #
-## @package TextureMapInterface
+## @package TextureMapInterfaceQt5
 #
 # Exercises texture mapping and interface usage.
 # Implements a textured cube, which can spin around the X, Y, or Z axis, and can be rotated using Arcball.
@@ -17,9 +17,8 @@ from OpenGL.GLU import *
 import sys
 import math
 
-from PyQt4 import QtGui
-from PyQt4.QtOpenGL import *
-from PyQt4 import QtCore
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtOpenGL import *
 
 from ArcBall import *
 
@@ -592,10 +591,10 @@ class GLWidget(QGLWidget):
     def paintGL(self):
         self.Render()
 
-class MainWindow(QtGui.QMainWindow):
+class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self):
-        QtGui.QMainWindow.__init__(self)
+        QtWidgets.QMainWindow.__init__(self)
 
         self.resize(WIDTH, HEIGHT)
         self.setWindowTitle('Texture Mapping to Cube')
@@ -606,8 +605,7 @@ class MainWindow(QtGui.QMainWindow):
         # QT requires a timed refresh when performing animations
         timer = QtCore.QTimer(self)
         timer.setInterval(20)
-        QtCore.QObject.connect(timer, QtCore.SIGNAL(
-            'timeout()'), glWidget.refresh)
+        timer.timeout.connect(glWidget.refresh)
         timer.start()
 
         self.controlScheme = "rotation around x-axis ( %s )" % self.glWidget.rotationDirection
@@ -619,7 +617,7 @@ class MainWindow(QtGui.QMainWindow):
         self.createDockWindows()
         self.widget = glWidget
 
-        main_layout = QtGui.QVBoxLayout()
+        main_layout = QtWidgets.QVBoxLayout()
         main_layout.addStretch()
 
         central_widget = glWidget
@@ -631,12 +629,12 @@ class MainWindow(QtGui.QMainWindow):
 
         menubar = self.menuBar()
 
-        exitAction = QtGui.QAction(QtGui.QIcon('exit.png'), '&Exit', self)
+        exitAction = QtWidgets.QAction(QtGui.QIcon('exit.png'), '&Exit', self)
         exitAction.setShortcut('Q')
         exitAction.setStatusTip('Exit application')
-        exitAction.triggered.connect(QtGui.qApp.quit)
+        exitAction.triggered.connect(QtWidgets.qApp.quit)
 
-        openFileAction = QtGui.QAction(
+        openFileAction = QtWidgets.QAction(
             QtGui.QIcon('exit.png'), '&Open File', self)
         openFileAction.setShortcut('Ctrl+O')
         openFileAction.setStatusTip('Open file')
@@ -650,23 +648,23 @@ class MainWindow(QtGui.QMainWindow):
 
     ## Create dockable windows for the controller.
     def createDockWindows(self):
-        dock = QtGui.QDockWidget("Options", self)
+        dock = QtWidgets.QDockWidget("Options", self)
         # Set allowable areas for where the window can be docked.
         dock.setAllowedAreas(QtCore.Qt.BottomDockWidgetArea | QtCore.Qt.TopDockWidgetArea |
                              QtCore.Qt.LeftDockWidgetArea | QtCore.Qt.RightDockWidgetArea)
-        self.controls = QtGui.QWidget(dock)
+        self.controls = QtWidgets.QWidget(dock)
 
-        self.buttonX = QtGui.QPushButton('x-axis', self)
-        self.buttonY = QtGui.QPushButton('y-axis', self)
-        self.buttonZ = QtGui.QPushButton('z-axis', self)
-        self.buttonArc = QtGui.QPushButton('arcball', self)
+        self.buttonX = QtWidgets.QPushButton('x-axis', self)
+        self.buttonY = QtWidgets.QPushButton('y-axis', self)
+        self.buttonZ = QtWidgets.QPushButton('z-axis', self)
+        self.buttonArc = QtWidgets.QPushButton('arcball', self)
 
         self.buttonX.clicked.connect(self.setRotX)
         self.buttonY.clicked.connect(self.setRotY)
         self.buttonZ.clicked.connect(self.setRotZ)
         self.buttonArc.clicked.connect(self.setArcball)
 
-        button_layout = QtGui.QHBoxLayout()
+        button_layout = QtWidgets.QHBoxLayout()
         button_layout.addWidget(self.buttonX)
         button_layout.addWidget(self.buttonY)
         button_layout.addWidget(self.buttonZ)
@@ -678,14 +676,15 @@ class MainWindow(QtGui.QMainWindow):
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, dock)
         self.viewMenu.addAction(dock.toggleViewAction())
 
-        dock = QtGui.QDockWidget("Current Action", self)
-        self.info = QtGui.QWidget(dock)
+        dock = QtWidgets.QDockWidget("Current Action", self)
+        self.info = QtWidgets.QWidget(dock)
 
         # -------------- Buttons ----------------------- #
-        control_layout = QtGui.QGridLayout()
-        self.buttonInt = QtGui.QPushButton('Intrinsic', self)
-        self.buttonExt = QtGui.QPushButton('Extrinsic', self)
-        self.buttonNone = QtGui.QPushButton('ZYX', self)
+        control_layout = QtWidgets.QGridLayout()
+        self.buttonInt = QtWidgets.QPushButton('Intrinsic (XYZ)', self)
+        # http://www.unicodemap.org/range/2/Latin-1_Supplement/
+        self.buttonExt = QtWidgets.QPushButton('Extrinsic (XYZ)\xaf\xb9', self)
+        self.buttonNone = QtWidgets.QPushButton('ZYX', self)
 
         self.buttonInt.clicked.connect(self.setIntrinsic)
         self.buttonExt.clicked.connect(self.setExtrinsic)
@@ -695,7 +694,7 @@ class MainWindow(QtGui.QMainWindow):
         control_layout.addWidget(self.buttonExt, 2, 0)
         control_layout.addWidget(self.buttonNone, 3, 0)
 
-        self.lInfo = QtGui.QLabel()
+        self.lInfo = QtWidgets.QLabel()
         self.lInfo.setText("Current control scheme: \n\n" + self.controlScheme)
         self.lInfo.setAlignment(QtCore.Qt.AlignCenter)
 
@@ -774,7 +773,7 @@ class MainWindow(QtGui.QMainWindow):
 def main():
     """Instantiate the QT objects."""
 
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     win = MainWindow()
     win.show()
     timer = QtCore.QTimer()
