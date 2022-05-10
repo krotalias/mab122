@@ -5,16 +5,16 @@
 #
 ## @package graph
 #
-#  A graph data structure consists of a finite (and possibly mutable) set 
-#  of vertices or nodes or points, together with a set of unordered pairs of 
-#  these vertices for an undirected graph, or a set of ordered pairs for a directed graph. 
-#  These pairs are known as edges, arcs, or lines for an undirected graph and as arrows, 
-#  directed edges, directed arcs, or directed lines for a directed graph. 
-#  The vertices may be part of the graph structure, or may be external entities represented 
+#  A graph data structure consists of a finite (and possibly mutable) set
+#  of vertices or nodes or points, together with a set of unordered pairs of
+#  these vertices for an undirected graph, or a set of ordered pairs for a directed graph.
+#  These pairs are known as edges, arcs, or lines for an undirected graph and as arrows,
+#  directed edges, directed arcs, or directed lines for a directed graph.
+#  The vertices may be part of the graph structure, or may be external entities represented
 #  by integer indices or references.
 #
 #  @author Flavia Cavalcanti
-#  @date 12/02/2017 
+#  @date 12/02/2017
 #  @see http://www.python-course.eu/graphs_python.php
 #  @see https://en.wikipedia.org/wiki/Graph_theory
 #
@@ -33,7 +33,7 @@ class Graph(object):
         """
         if graph_dict == None:
             graph_dict = {}
-        ## A dictionary holding the graph. 
+        ## A dictionary holding the graph.
         ## Vertices are the keys and the data are the set of nodes connected by an edge to a vertex.
         self.__graph_dict = graph_dict
 
@@ -68,9 +68,9 @@ class Graph(object):
         self.__graph_dict[vertex1].append(vertex2)
 
         if undirected:
-           self.__graph_dict[vertex2].append(vertex1)
+            self.__graph_dict[vertex2].append(vertex1)
 
-    def getEdges(self,vertex):
+    def getEdges(self, vertex):
         """Return the set of edges connected to a given vertex."""
 
         edges = []
@@ -78,8 +78,8 @@ class Graph(object):
             edges.append(set([vertex, neighbour]))
             # this new syntax does not work with python < 2.7
             # edges.append({vertex, neighbour})
-    
-        return edges   
+
+        return edges
 
     def __generate_edges(self):
         """A static method generating the edges of this
@@ -91,8 +91,8 @@ class Graph(object):
         for vertex in self.__graph_dict:
             for e in self.getEdges(vertex):
                 if e not in edges:
-                   edges.append(e)
-                
+                    edges.append(e)
+
         return edges
 
     def get(self, key):
@@ -123,15 +123,14 @@ class Graph(object):
 def main():
     """"Main program for testing."""
 
-    g = { "a" : ["d"],
-          "b" : ["c", "d"],
-          "c" : ["a", "b"],
-          "d" : ["a", "b"],
-        }
-
+    g = {"a": ["d"],
+         "b": ["c", "d"],
+         "c": ["a", "b"],
+         "d": ["a", "b"],
+         }
 
     graph = Graph(g)
-    print ("Complete graph:\n%s\n" % graph)
+    print("Complete graph:\n%s\n" % graph)
 
     print("Vertices of graph:")
     print(graph.vertices())
@@ -144,31 +143,36 @@ def main():
 
     print("Vertices of graph:")
     print(graph.vertices())
- 
+
     print("Add an edge:")
     # edge can be passed as a list, set or tuple
-    graph.add_edge(["a","z"])
-    
+    graph.add_edge(["a", "z"])
+
     print("Vertices of graph:")
     print(graph.vertices())
 
     print("Edges of graph:")
     print(graph.edges())
 
-    print("Edges connected to ""a"": %s -> %s" % (graph.getEdges("a"), graph["a"]))
-    print("Edges connected to ""b"": %s -> %s" % (graph.getEdges("b"), graph.get("b")))
-    print("Edges connected to ""c"": %s -> %s" % (graph.getEdges("c"), graph.get("c")))
-    print("Edges connected to ""d"": %s -> %s" % (graph.getEdges("d"), graph.get("d")))
-    print("Edges connected to ""z"": %s -> %s" % (graph.getEdges("z"), graph.get("z")))
+    print("Edges connected to ""a"": %s -> %s" %
+          (graph.getEdges("a"), graph["a"]))
+    print("Edges connected to ""b"": %s -> %s" %
+          (graph.getEdges("b"), graph.get("b")))
+    print("Edges connected to ""c"": %s -> %s" %
+          (graph.getEdges("c"), graph.get("c")))
+    print("Edges connected to ""d"": %s -> %s" %
+          (graph.getEdges("d"), graph.get("d")))
+    print("Edges connected to ""z"": %s -> %s" %
+          (graph.getEdges("z"), graph.get("z")))
 
     print('Adding an edge {"x","y"} with new vertices:')
-    graph.add_edge(set(["x","y"]))
+    graph.add_edge(set(["x", "y"]))
     print("Vertices of graph:")
     print(graph.vertices())
     print("Edges of graph:")
     print(graph.edges())
     print("Graph: %s" % graph.__repr__)
 
+
 if __name__ == "__main__":
     sys.exit(main())
-

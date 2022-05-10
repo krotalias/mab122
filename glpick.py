@@ -8,7 +8,7 @@
 #   Face selection using raycast.
 #
 #   @author Flavia Cavalcanti
-#   @date 01/02/2017 
+#   @date 01/02/2017
 #
 from OpenGL.GL import *
 from OpenGL.GLUT import *
@@ -22,14 +22,15 @@ from geometry import *
 #  @param pt given point.
 #  @return pt in world coordinates.
 #
-def unProject ( pt ):
-    modelMatrix = glGetDoublev  ( GL_MODELVIEW_MATRIX )
-    projMatrix = glGetDoublev  ( GL_PROJECTION_MATRIX )
-    viewport = glGetIntegerv ( GL_VIEWPORT )
+def unProject(pt):
+    modelMatrix = glGetDoublev(GL_MODELVIEW_MATRIX)
+    projMatrix = glGetDoublev(GL_PROJECTION_MATRIX)
+    viewport = glGetIntegerv(GL_VIEWPORT)
 
-    wcx, wcy, wcz = gluUnProject ( pt.x, pt.y, pt.z, modelMatrix, projMatrix, viewport )
+    wcx, wcy, wcz = gluUnProject(
+        pt.x, pt.y, pt.z, modelMatrix, projMatrix, viewport)
 
-    return Point ( wcx, wcy, wcz )
+    return Point(wcx, wcy, wcz)
 
 ## Returns a ray starting at the mouse position.
 #
@@ -37,21 +38,21 @@ def unProject ( pt ):
 #  @param y coordinate of the mouse.
 #  @return a Line object.
 #
-def pickFace(x,y):
+def pickFace(x, y):
     """Returns a ray starting at the mouse position."""
 
-    p1 = Point ( x, y, 0.0)
-    p2 = Point ( x, y, 1.0)
+    p1 = Point(x, y, 0.0)
+    p2 = Point(x, y, 1.0)
 
-    p1 = unProject ( p1 )
-    p2 = unProject ( p2 )
+    p1 = unProject(p1)
+    p2 = unProject(p2)
 
-    return Line ( p1, p2 )
+    return Line(p1, p2)
 
 ## Main program for testing.
-def main(argv = None):
+def main(argv=None):
     if argv is None:
-       argv = sys.argv
+        argv = sys.argv
 
     # pass arguments to init
     glutInit(argv)
@@ -62,7 +63,7 @@ def main(argv = None):
     # Alpha components supported
     # Depth buffer
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH)
-    
+
     Height = 480
     Width = 640
 
@@ -76,13 +77,13 @@ def main(argv = None):
     # to Python, remember this assignment would make the variable local and not global
     # if it weren't for the global declaration at the start of main.
     window = glutCreateWindow(b"Lesson 48: NeHe ArcBall Rotation Tutorial")
-    
-    glViewport(0, 0, Width, Height)
-    gluPerspective(45.0, float(Width)/float(Height), 1, 100.0)
 
-    l4 = pickFace(100,100)
-    print (l4)
+    glViewport(0, 0, Width, Height)
+    gluPerspective(45.0, float(Width) / float(Height), 1, 100.0)
+
+    l4 = pickFace(100, 100)
+    print(l4)
+
 
 if __name__ == '__main__':
-   sys.exit(main())
-
+    sys.exit(main())
